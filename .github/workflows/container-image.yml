@@ -29,7 +29,7 @@ jobs:
 
       - name: Install qemu-user-static for cross-architecture builds
         run: |
-          apt-get install -y qemu-user-static
+          sudo apt-get install -y qemu qemu-user-static
 
       - name: Summary Information
         run: |
