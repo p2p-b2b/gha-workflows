@@ -27,6 +27,10 @@ jobs:
         run: |
           sudo apt-get -y install podman
 
+      - name: Install qemu-user-static for cross-architecture builds
+        run: |
+          apt-get install -y qemu-user-static
+
       - name: Summary Information
         run: |
           echo "# Container Image Summary" > $GITHUB_STEP_SUMMARY
