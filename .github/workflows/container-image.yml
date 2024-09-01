@@ -34,7 +34,6 @@ jobs:
           sudo apt autoremove -y --purge docker-ce docker-ce-cli
           sudo rm -rf /var/lib/docker
           sudo rm -rf /etc/apparmor.d/docker
-          sudo groupdel docker
           sudo rm -rf /var/run/docker.sock
 
       - name: Install Podman
