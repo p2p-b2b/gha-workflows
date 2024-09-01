@@ -27,21 +27,33 @@ jobs:
         run: |
           sudo apt-get update
 
+
+
       - name: Install Podman
         run: |
-          sudo apt install qemu-utils qemu-system-x86
+          sudo apt install -y qemu-utils qemu-system-x86
 
-          curl -OL https://github.com/containers/gvisor-tap-vsock/releases/download/v0.7.5/gvproxy-linux-amd64
+          GVPROXY_VERSION="v0.7.5"
+          GVPROXY_URL="https://github.com/containers/gvisor-tap-vsock/releases/download/${GVPROXY_VERSION}/gvproxy-linux-amd64"
+          curl -SL -o /tmp/gvproxy-linux-amd64 $GVPROXY_URL
           sudo mkdir -p /usr/local/lib/podman
-          sudo install -m 0755 gvproxy-linux-amd64 /usr/local/lib/podman/gvproxy
+          sudo install -m 0755 /tmp/gvproxy-linux-amd64 /usr/local/lib/podman/gvproxy
 
-          PODMAN_DOWNLOAD_URL=" https://github.com/containers/podman/releases/download/v5.2.2/podman-remote-static-linux_amd64.tar.gz"
+          # virtiofsd
+          sudo apt install -y libcap-ng-dev libseccomp-dev
+          cd /tmp
+          git clone https://gitlab.com/virtio-fs/virtiofsd.git
+          cd virtiofsd/
+          cargo build --release
+          sudo install -m 0755 target/release/virtiofsd /usr/local/bin/virtiofsd
+
+          PODMAN_VERSION="v5.2.2"
+          PODMAN_URL=" https://github.com/containers/podman/releases/download/${PODMAN_VERSION}/podman-remote-static-linux_amd64.tar.gz"
 
           echo "Downloading Podman from $PODMAN_DOWNLOAD_URL"
           curl -SL -o /tmp/podman.tar.gz $PODMAN_DOWNLOAD_URL
           tar -xvf /tmp/podman.tar.gz -C /tmp/
-          sudo chmod +x /tmp/bin/podman-remote-static-linux_amd64
-          sudo mv /tmp/bin/podman-remote-static-linux_amd64 /usr/local/bin/podman
+          sudo install -m 0755 /tmp/bin/podman-remote-static-linux_amd64 /usr/local/bin/podman
           podman --version
 
           podman machine init
