@@ -34,14 +34,9 @@ jobs:
           echo "Downloading Podman from $DOWNLOAD_URL"
           curl -SL -o /tmp/podman.tar.gz $DOWNLOAD_URL
           tar -xvf /tmp/podman.tar.gz -C /tmp/
-          tree /tmp/
           chmod +x /tmp/bin/podman-remote-static-linux_amd64
           sudo mv /tmp/bin/podman-remote-static-linux_amd64 /usr/local/bin/podman
           podman --version
-
-      # - name: Install qemu-user-static for cross-architecture builds
-      #   run: |
-      #     sudo apt-get install -y qemu qemu-user-static
 
       - name: Summary Information
         run: |
