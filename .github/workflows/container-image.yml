@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -30,46 +30,7 @@ jobs:
       - name: Install Podman
         run: |
           echo "Installing Podman"
-          sudo apt install -y qemu-utils qemu-system-x86 qemu-kvm qemu-system bridge-utils libvirt-daemon-system libvirt-daemon
-          sudo apt install -y libguestfs-tools bridge-utils libosinfo-bin qemu-system tuned crun
-          sudo adduser `id -un` libvirt
-          sudo adduser `id -un` kvm
-          sudo chown `id -un`:kvm -R /dev/kvm
-          sudo systemctl enable --now libvirtd
-          sudo systemctl restart libvirtd
-
-          # gvproxy
-          echo "Installing gvproxy"
-          GVPROXY_VERSION="v0.7.5"
-          GVPROXY_URL="https://github.com/containers/gvisor-tap-vsock/releases/download/${GVPROXY_VERSION}/gvproxy-linux-amd64"
-          curl -SL -o /tmp/gvproxy-linux-amd64 $GVPROXY_URL
-          sudo mkdir -p /usr/local/lib/podman
-          sudo install -m 0755 /tmp/gvproxy-linux-amd64 /usr/local/lib/podman/gvproxy
-
-          # virtiofsd
-          echo "Installing virtiofsd"
-          sudo apt install -y libcap-ng-dev libseccomp-dev
-          cd /tmp
-          git clone https://gitlab.com/virtio-fs/virtiofsd.git
-          cd virtiofsd/
-          cargo build --release
-          sudo install -m 0755 target/release/virtiofsd /usr/local/bin/virtiofsd
-
-          # podman
-          echo "Installing Podman"
-          PODMAN_VERSION="v5.2.2"
-          PODMAN_URL=" https://github.com/containers/podman/releases/download/${PODMAN_VERSION}/podman-remote-static-linux_amd64.tar.gz"
-
-          echo "Downloading Podman from $PODMAN_URL"
-          curl -SL -o /tmp/podman.tar.gz $PODMAN_URL
-          tar -xvf /tmp/podman.tar.gz -C /tmp/
-          sudo install -m 0755 /tmp/bin/podman-remote-static-linux_amd64 /usr/local/bin/podman
-          podman --version
-
-          # init podman machine
-          echo "Initializing Podman machine"
-          podman machine init
-          podman machine start
+          sudo apt install -y podman
 
       - name: Show Tools version
         run: |
