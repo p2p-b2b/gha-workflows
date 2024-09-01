@@ -21,8 +21,6 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-
       - name: Update apt-get
         run: |
           sudo apt-get update
@@ -37,7 +35,6 @@ jobs:
           sudo chown `id -un`:kvm -R /dev/kvm
           sudo systemctl enable --now libvirtd
           sudo systemctl restart libvirtd
-
 
           # gvproxy
           echo "Installing gvproxy"
