@@ -33,6 +33,7 @@ jobs:
         run: |
           sudo apt install -y qemu-utils qemu-system-x86
 
+          # gvproxy
           GVPROXY_VERSION="v0.7.5"
           GVPROXY_URL="https://github.com/containers/gvisor-tap-vsock/releases/download/${GVPROXY_VERSION}/gvproxy-linux-amd64"
           curl -SL -o /tmp/gvproxy-linux-amd64 $GVPROXY_URL
@@ -47,15 +48,17 @@ jobs:
           cargo build --release
           sudo install -m 0755 target/release/virtiofsd /usr/local/bin/virtiofsd
 
+          # podman
           PODMAN_VERSION="v5.2.2"
           PODMAN_URL=" https://github.com/containers/podman/releases/download/${PODMAN_VERSION}/podman-remote-static-linux_amd64.tar.gz"
 
-          echo "Downloading Podman from $PODMAN_DOWNLOAD_URL"
-          curl -SL -o /tmp/podman.tar.gz $PODMAN_DOWNLOAD_URL
+          echo "Downloading Podman from $PODMAN_URL"
+          curl -SL -o /tmp/podman.tar.gz $PODMAN_URL
           tar -xvf /tmp/podman.tar.gz -C /tmp/
           sudo install -m 0755 /tmp/bin/podman-remote-static-linux_amd64 /usr/local/bin/podman
           podman --version
 
+          # init podman machine
           podman machine init
           podman machine start
 
