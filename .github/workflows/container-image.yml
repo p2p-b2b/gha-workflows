@@ -34,6 +34,9 @@ jobs:
           sugo apt install -y libguestfs-tools bridge-utils libosinfo-bin qemu-system tuned
           sudo adduser `id -un` libvirt
           sudo adduser `id -un` kvm
+          sudo systemctl enable --now libvirtd
+          sudo systemctl restart libvirtd
+
 
           # gvproxy
           echo "Installing gvproxy"
