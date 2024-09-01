@@ -72,7 +72,6 @@ jobs:
           echo "## Make container-build" >> $GITHUB_STEP_SUMMARY
           GIT_VERSION=${{ github.ref_name }} make container-build | tee -a $GITHUB_STEP_SUMMARY
 
-
       - name: Show container images
         run: |
           echo "## Show container images" >> $GITHUB_STEP_SUMMARY
