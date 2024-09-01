@@ -19,7 +19,8 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    # runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -32,13 +33,13 @@ jobs:
           echo "Installing Podman"
           sudo apt install -y podman
 
-      - name: Overwrite crun
-        run: |
-          echo "Overwriting crun"
-          PKG_URL="http://ftp.de.debian.org/debian/pool/main/c/crun/crun_1.8.1-1+deb12u1_amd64.deb"
-          wget $PKG_URL
+      # - name: Overwrite crun
+      #   run: |
+      #     echo "Overwriting crun"
+      #     PKG_URL="http://ftp.de.debian.org/debian/pool/main/c/crun/crun_1.8.1-1+deb12u1_amd64.deb"
+      #     wget $PKG_URL
 
-          sudo dpkg -i crun_1.8.1-1+deb12u1_amd64.deb
+      #     sudo dpkg -i crun_1.8.1-1+deb12u1_amd64.deb
 
       - name: Show Tools version
         run: |
