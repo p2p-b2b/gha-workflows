@@ -34,7 +34,7 @@ jobs:
           sugo apt install -y libguestfs-tools bridge-utils libosinfo-bin qemu-system tuned
           sudo adduser `id -un` libvirt
           sudo adduser `id -un` kvm
-          sudo chown `id -un`:kvm /dev/kvm
+          sudo chown `id -un`:kvm -R /dev/kvm
           sudo systemctl enable --now libvirtd
           sudo systemctl restart libvirtd
 
