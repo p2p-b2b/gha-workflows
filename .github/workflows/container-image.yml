@@ -38,7 +38,7 @@ jobs:
           PKG_URL="wget http://ftp.de.debian.org/debian/pool/main/c/crun/crun_1.8.1-1+deb12u1_amd64.deb"
           wget $PKG_URL
 
-          dpkg -i crun_1.8.1-1+deb12u1_amd64.deb
+          sudo dpkg -i crun_1.8.1-1+deb12u1_amd64.deb
 
       - name: Show Tools version
         run: |
