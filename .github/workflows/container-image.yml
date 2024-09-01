@@ -44,13 +44,12 @@ jobs:
 
           # virtiofsd
           echo "Installing virtiofsd"
-          # sudo apt install -y libcap-ng-dev libseccomp-dev
-          # cd /tmp
-          # git clone https://gitlab.com/virtio-fs/virtiofsd.git
-          # cd virtiofsd/
-          # cargo build --release
-          # sudo install -m 0755 target/release/virtiofsd /usr/local/bin/virtiofsd
-          cargo install virtiofsd
+          sudo apt install -y libcap-ng-dev libseccomp-dev
+          cd /tmp
+          git clone https://gitlab.com/virtio-fs/virtiofsd.git
+          cd virtiofsd/
+          cargo build --release
+          sudo install -m 0755 target/release/virtiofsd /usr/local/bin/virtiofsd
 
           # podman
           echo "Installing Podman"
