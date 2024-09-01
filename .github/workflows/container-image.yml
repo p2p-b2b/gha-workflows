@@ -26,6 +26,7 @@ jobs:
       - name: Install Podman
         run: |
           sudo apt-get -y install podman
+          sudo apt-get -y install qemu qemu-user-static
 
       - name: Summary Information
         run: |
@@ -66,6 +67,12 @@ jobs:
         run: |
           echo "## Make container-build" >> $GITHUB_STEP_SUMMARY
           GIT_VERSION=${{ github.ref_name }} make container-build | tee -a $GITHUB_STEP_SUMMARY
+
+
+      - name: Show container images
+        run: |
+          echo "## Show container images" >> $GITHUB_STEP_SUMMARY
+          podman images | tee -a $GITHUB_STEP_SUMMARY
 
       - name: Make container-login
         run: |
