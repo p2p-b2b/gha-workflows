@@ -31,9 +31,11 @@ jobs:
 
       - name: Install Podman
         run: |
-          sudo apt install -y qemu-utils qemu-system-x86
+          echo "Installing Podman"
+          sudo apt install -y qemu-utils qemu-system-x86 qemu-kvm qemu-system
 
           # gvproxy
+          echo "Installing gvproxy"
           GVPROXY_VERSION="v0.7.5"
           GVPROXY_URL="https://github.com/containers/gvisor-tap-vsock/releases/download/${GVPROXY_VERSION}/gvproxy-linux-amd64"
           curl -SL -o /tmp/gvproxy-linux-amd64 $GVPROXY_URL
@@ -41,6 +43,7 @@ jobs:
           sudo install -m 0755 /tmp/gvproxy-linux-amd64 /usr/local/lib/podman/gvproxy
 
           # virtiofsd
+          echo "Installing virtiofsd"
           # sudo apt install -y libcap-ng-dev libseccomp-dev
           # cd /tmp
           # git clone https://gitlab.com/virtio-fs/virtiofsd.git
@@ -50,6 +53,7 @@ jobs:
           cargo install virtiofsd
 
           # podman
+          echo "Installing Podman"
           PODMAN_VERSION="v5.2.2"
           PODMAN_URL=" https://github.com/containers/podman/releases/download/${PODMAN_VERSION}/podman-remote-static-linux_amd64.tar.gz"
 
@@ -60,6 +64,7 @@ jobs:
           podman --version
 
           # init podman machine
+          echo "Initializing Podman machine"
           podman machine init
           podman machine start
 
