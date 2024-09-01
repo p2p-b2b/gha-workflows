@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "Installing Podman"
           sudo apt install -y qemu-utils qemu-system-x86 qemu-kvm qemu-system bridge-utils libvirt-daemon-system libvirt-daemon
-          sudo apt install -y libguestfs-tools bridge-utils libosinfo-bin qemu-system tuned
+          sudo apt install -y libguestfs-tools bridge-utils libosinfo-bin qemu-system tuned crun
           sudo adduser `id -un` libvirt
           sudo adduser `id -un` kvm
           sudo chown `id -un`:kvm -R /dev/kvm
@@ -70,6 +70,11 @@ jobs:
           echo "Initializing Podman machine"
           podman machine init
           podman machine start
+
+      - name: Show Tools version
+        run: |
+          podman --version
+          crun --version
 
       - name: Summary Information
         run: |
