@@ -32,7 +32,7 @@ jobs:
       - name: Install Podman
         run: |
           echo "Installing Podman"
-          sudo apt install -y qemu-utils qemu-system-x86 qemu-kvm qemu-system ubuntu-vm-builder bridge-utils
+          sudo apt install -y qemu-utils qemu-system-x86 qemu-kvm qemu-system bridge-utils
           sudo adduser `id -un` libvirt
           sudo adduser `id -un` kvm
           chown root:kvm /dev/kvm
