@@ -5,7 +5,7 @@ on:
     secrets:
       GH_PA_TOKEN:
         required: true
-        description: 'GitHub token'
+        description: "GitHub token"
   workflow_dispatch:
 
 env:
@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-24.04
     # runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Update apt-get
         run: |
@@ -32,14 +32,6 @@ jobs:
         run: |
           echo "Installing Podman"
           sudo apt install -y podman
-
-      # - name: Overwrite crun
-      #   run: |
-      #     echo "Overwriting crun"
-      #     PKG_URL="http://ftp.de.debian.org/debian/pool/main/c/crun/crun_1.8.1-1+deb12u1_amd64.deb"
-      #     wget $PKG_URL
-
-      #     sudo dpkg -i crun_1.8.1-1+deb12u1_amd64.deb
 
       - name: Show Tools version
         run: |
@@ -76,7 +68,7 @@ jobs:
           echo "**Podman Version:** $podman_version" >> $GITHUB_STEP_SUMMARY
 
       - name: Download Distribution files
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: dist
           path: ./dist/
