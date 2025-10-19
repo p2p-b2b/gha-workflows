@@ -1,11 +1,6 @@
 name: Container Image
 
 on:
-  workflow_call:
-    secrets:
-      GH_PA_TOKEN:
-        required: true
-        description: "GitHub token"
   workflow_dispatch:
 
 env:
@@ -19,8 +14,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
-    # runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
 
@@ -86,7 +80,7 @@ jobs:
       - name: Make container-login
         run: |
           echo "## Make container-login" >> $GITHUB_STEP_SUMMARY
-          GIT_VERSION=${{ github.ref_name }} REPOSITORY_REGISTRY_TOKEN=${{ secrets.GH_PA_TOKEN }} make container-login | tee -a $GITHUB_STEP_SUMMARY
+          GIT_VERSION=${{ github.ref_name }} REPOSITORY_REGISTRY_TOKEN=${{ secrets.GITHUB_TOKEN }} REPOSITORY_REGISTRY_USERNAME=${{ github.actor }} make container-login | tee -a $GITHUB_STEP_SUMMARY
 
       - name: Make container-publish
         run: |
