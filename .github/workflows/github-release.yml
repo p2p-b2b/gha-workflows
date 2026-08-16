@@ -1,0 +1,130 @@
+name: GitHub Release
+
+# Reusable workflow that publishes a GitHub Release from a previously uploaded
+# build artifact.
+#
+# It is deliberately separate from container-image.yml: that workflow builds and
+# publishes container images, this one creates the release and attaches the
+# distribution assets. A caller typically runs build -> container-image ->
+# github-release, so the release only appears once its assets exist.
+#
+# Usage:
+#
+#   jobs:
+#     release:
+#       needs: [build, containers]
+#       uses: slashdevops/gha-workflows/.github/workflows/github-release.yml@v1
+#       with:
+#         files: dist/assets/*.zip
+
+on:
+  workflow_call:
+    inputs:
+      artifact-name:
+        description: "Name of the artifact to download (as uploaded by actions/upload-artifact)."
+        required: false
+        type: string
+        default: dist
+      artifact-path:
+        description: "Directory the artifact is extracted into."
+        required: false
+        type: string
+        default: ./dist/
+      files:
+        description: "Newline-separated globs of files to attach to the release."
+        required: false
+        type: string
+        default: |
+          dist/assets/*.zip
+      tag:
+        description: "Tag to release. Defaults to the ref that triggered the run."
+        required: false
+        type: string
+        default: ""
+      name:
+        description: "Release title. Defaults to the tag."
+        required: false
+        type: string
+        default: ""
+      draft:
+        description: "Create the release as a draft."
+        required: false
+        type: boolean
+        default: false
+      prerelease:
+        description: "Mark the release as a prerelease."
+        required: false
+        type: boolean
+        default: false
+      make-latest:
+        description: "Mark this release as the repository's latest."
+        required: false
+        type: boolean
+        default: true
+      generate-release-notes:
+        description: "Let GitHub generate release notes from merged pull requests."
+        required: false
+        type: boolean
+        default: true
+    outputs:
+      url:
+        description: "Browser URL of the published release."
+        value: ${{ jobs.release.outputs.url }}
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    # Explicit, because the runner's default is not the same shell everywhere and this one
+    # brings `pipefail` with it: a step whose pipeline fails in an earlier stage now fails
+    # the step instead of reporting the exit code of the last command in it.
+    shell: bash
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    outputs:
+      url: ${{ steps.create-github-release.outputs.url }}
+    steps:
+      - name: Summary Information
+        run: |
+          echo "# GitHub Release Summary" > $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Repository:** ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Tag:** ${{ inputs.tag != '' && inputs.tag || github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Draft:** ${{ inputs.draft }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Prerelease:** ${{ inputs.prerelease }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+      - name: Download distribution files
+        uses: actions/download-artifact@v8
+        with:
+          name: ${{ inputs.artifact-name }}
+          path: ${{ inputs.artifact-path }}
+
+      - name: List downloaded assets
+        run: |
+          echo "## Assets" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          find "${{ inputs.artifact-path }}" -type f | sort | tee -a $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Create Release
+        id: create-github-release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ inputs.tag != '' && inputs.tag || github.ref_name }}
+          name: ${{ inputs.name != '' && inputs.name || (inputs.tag != '' && inputs.tag || github.ref_name) }}
+          draft: ${{ inputs.draft }}
+          prerelease: ${{ inputs.prerelease }}
+          generate_release_notes: ${{ inputs.generate-release-notes }}
+          make_latest: ${{ inputs.make-latest }}
+          files: ${{ inputs.files }}
+
+      - name: Release URL
+        run: |
+          echo "## Release" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.create-github-release.outputs.url }}" | tee -a $GITHUB_STEP_SUMMARY
