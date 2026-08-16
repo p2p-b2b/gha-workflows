@@ -17,7 +17,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Update apt-get
         run: |
@@ -63,7 +63,7 @@ jobs:
           echo "**Podman Version:** $podman_version" >> $GITHUB_STEP_SUMMARY
 
       - name: Download Distribution files
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v8
         with:
           name: dist
           path: ./dist/
