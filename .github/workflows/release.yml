@@ -1,0 +1,28 @@
+name: Release
+
+# This repository releases itself with its own reusable workflow — merging a
+# feature PR updates the Release PR, and merging the Release PR cuts the tag.
+#
+# Uses the local `./` reference rather than a pinned `@vX.Y.Z` so the workflow
+# under review is the one that runs; a consumer should pin a tag instead.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    uses: ./.github/workflows/release-please.yml
+    with:
+      # `simple` because this repository ships YAML, not a language package —
+      # release-please maintains CHANGELOG.md and the manifest, nothing else.
+      release-type: simple
+      config-file: release-please-config.json
+      manifest-file: .release-please-manifest.json
